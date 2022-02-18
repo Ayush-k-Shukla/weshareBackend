@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 
 import FileBase from 'react-file-base64';
@@ -6,10 +6,15 @@ import FileBase from 'react-file-base64';
 import useStyles from './styles';
 
 import { useDispatch } from 'react-redux';
-import { createPost } from '../../api';
+import { createPost, updatePost } from '../../api';
 
-const Form = () => {
+import { useSelector } from 'react-redux';
+
+const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
   const dispatch = useDispatch();
 
   const [postData, setPostData] = useState({
@@ -20,8 +25,20 @@ const Form = () => {
     selectedFile: '',
   });
 
+  useEffect(() => {
+    //err ;; post dat not coming fix this and post also nu;l
+    console.log(post);
+
+    if (post) setPostData(post);
+    console.log(postData);
+  }, [post]);
+
   const handleSubmit = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+
+    if (currentId) {
+      dispatch(updatePost(postData, currentId));
+    }
     dispatch(createPost(postData));
   };
   const clearAll = () => {};
