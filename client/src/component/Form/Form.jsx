@@ -27,7 +27,8 @@ const Form = ({ currentId, setCurrentId }) => {
 
   useEffect(() => {
     //err ;; post dat not coming fix this and post also nu;l
-    console.log(post);
+    // console.log(post);
+    // console.log(`cid : ${currentId}`);
 
     if (post) setPostData(post);
     console.log(postData);

@@ -16,6 +16,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 
 const Post = ({ post, setCurrentId }) => {
+  // console.log(`id : ${post._id}`);
   const classes = useStyles();
   return (
     <Card className={classes.card}>
@@ -34,7 +35,7 @@ const Post = ({ post, setCurrentId }) => {
         <Button
           style={{ color: 'white' }}
           size='small'
-          onclick={() => setCurrentId(post._id)}
+          onClick={() => setCurrentId(post._id)}
         >
           <MoreHorizIcon fontSize='default' />
         </Button>
@@ -50,12 +51,12 @@ const Post = ({ post, setCurrentId }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size='small' color='primary' onclick={() => {}}>
+        <Button size='small' color='primary' onClick={() => {}}>
           <ThumbUpAltIcon fontSize='small' />
           like
           {post.likeCount}
         </Button>
-        <Button size='small' color='primary' onclick={() => {}}>
+        <Button size='small' color='primary'>
           <DeleteIcon fontSize='small' />
           delete
         </Button>
