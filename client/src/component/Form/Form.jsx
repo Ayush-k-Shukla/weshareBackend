@@ -6,7 +6,8 @@ import FileBase from 'react-file-base64';
 import useStyles from './styles';
 
 import { useDispatch } from 'react-redux';
-import { createPost, updatePost } from '../../api';
+// * import middlrware to dispatch from action not from apis
+import { createPost, updatePost } from '../../actions/posts';
 
 import { useSelector } from 'react-redux';
 
@@ -36,7 +37,8 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const handleSubmit = (e) => {
     //if use prevent default "react-error-overlay": "6.0.9", this is rquired
-    // e.preventDefault();
+    e.preventDefault();
+    /// ? err: after two refress new conremt visible
     if (currentId) {
       dispatch(updatePost(postData, currentId));
       clearAll();
@@ -102,7 +104,9 @@ const Form = ({ currentId, setCurrentId }) => {
           label='tags'
           fullWidth
           value={postData.tags}
-          onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(',') })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase
