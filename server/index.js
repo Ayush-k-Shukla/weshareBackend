@@ -20,6 +20,10 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 
+app.get('/', (req, res) => {
+  res.send('hello to our vlog app api');
+});
+
 const connection = mongoose.createConnection(process.env.MONGO_URI);
 connection
   .once('open', () => {
