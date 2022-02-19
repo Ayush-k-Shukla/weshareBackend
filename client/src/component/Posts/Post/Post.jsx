@@ -14,10 +14,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 import moment from 'moment';
+import { deletePost, likePost } from '../../../actions/posts.js';
+import { useDispatch } from 'react-redux';
 
 const Post = ({ post, setCurrentId }) => {
   // console.log(`id : ${post._id}`);
   const classes = useStyles();
+  const dispatch = useDispatch();
+
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -27,6 +31,7 @@ const Post = ({ post, setCurrentId }) => {
       />
       <div className={classes.overlay}>
         <Typography variant='h6'>{post.creator}</Typography>
+        {/* here created at time relative to server fix rwmainint */}
         <Typography variant='body2'>
           {moment(post.createdAt).fromNow()}
         </Typography>
@@ -45,20 +50,35 @@ const Post = ({ post, setCurrentId }) => {
           {post.tags.map((tag) => `#${tag}`)}
         </Typography>
       </div>
+      <Typography className={classes.title} variant='h5' gutterBottom>
+        {post.title}
+      </Typography>
       <CardContent>
-        <Typography className={classes.title} variant='h5' gutterBottom>
+        <Typography
+          className={classes.title}
+          variant='h2'
+          color='textSecondary'
+          component='p'
+        >
           {post.message}
         </Typography>
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size='small' color='primary' onClick={() => {}}>
-          <ThumbUpAltIcon fontSize='small' />
-          like
-          {post.likeCount}
+        <Button
+          size='small'
+          color='primary'
+          onClick={() => {
+            dispatch(likePost(post._id));
+          }}
+        >
+          <ThumbUpAltIcon fontSize='small' /> {post.likeCount}
         </Button>
-        <Button size='small' color='primary'>
+        <Button
+          size='small'
+          color='primary'
+          onClick={() => dispatch(deletePost(post._id))}
+        >
           <DeleteIcon fontSize='small' />
-          delete
         </Button>
       </CardActions>
     </Card>

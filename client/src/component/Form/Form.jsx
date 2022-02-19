@@ -31,18 +31,31 @@ const Form = ({ currentId, setCurrentId }) => {
     // console.log(`cid : ${currentId}`);
 
     if (post) setPostData(post);
-    console.log(postData);
+    // console.log(postData);
   }, [post]);
 
   const handleSubmit = (e) => {
+    //if use prevent default "react-error-overlay": "6.0.9", this is rquired
     // e.preventDefault();
-
     if (currentId) {
       dispatch(updatePost(postData, currentId));
+      clearAll();
+    } else {
+      dispatch(createPost(postData));
+      clearAll();
     }
-    dispatch(createPost(postData));
   };
-  const clearAll = () => {};
+
+  const clearAll = () => {
+    setCurrentId(null);
+    setPostData({
+      creator: '',
+      title: '',
+      message: '',
+      tags: '',
+      selectedFile: '',
+    });
+  };
 
   return (
     <Paper className={classes.paper}>
@@ -52,7 +65,9 @@ const Form = ({ currentId, setCurrentId }) => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant='h5'></Typography>
+        <Typography variant='h5'>
+          {currentId ? 'editing' : 'creating'} a blog
+        </Typography>
         <TextField
           name='creator'
           variant='outlined'
