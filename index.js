@@ -8,12 +8,14 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 //route import
+import userRoutes from './routes/user.js';
 import postRoutes from './routes/posts.js';
 
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use('/posts', postRoutes);
+app.use('/user', userRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
