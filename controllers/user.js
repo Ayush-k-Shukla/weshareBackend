@@ -8,12 +8,15 @@ import jwt from 'jsonwebtoken';
 
 export const signIn = async (req, res) => {
   const { email, password } = req.body;
+  console.log(`user : ${email}`);
   try {
     const existingUser = await User.findOne({ email });
-
+    console.log(`user : ${existingUser}`);
     if (!existingUser) {
       return res.status(404).json({ message: 'user does not exist' });
     } else {
+      console.log(`user : ${existingUser}`);
+
       const isPassword = await bcrypt.compare(password, existingUser.password);
       if (!isPassword) {
         return res.status(400).json({ message: 'Incorrect Password' });
