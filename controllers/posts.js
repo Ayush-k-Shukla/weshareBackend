@@ -4,7 +4,7 @@ import PostMessage from '../models/postMessage.js';
 export const getPosts = async (req, res) => {
   try {
     const postmessages = await PostMessage.find();
-    console.log(postmessages);
+    // console.log(postmessages);
     res.status(200).json(postmessages);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -51,15 +51,27 @@ export const deletePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   const { id: _id } = req.params;
+
+  if (!req.userId) {
+    res.json({ message: 'Unauthenticated' });
+  }
+
   if (!mongoose.Types.ObjectId.isValid(_id))
     res.status(404).send(`No post with given id exits in db`);
 
   const post = await PostMessage.findById(_id);
-  const updatedPost = await PostMessage.findByIdAndUpdate(
-    _id,
-    { likeCount: post.likeCount + 1 },
-    { new: true }
-  );
+
+  const index = post.likes.findIndex((id) => id === req.userId);
+
+  if (index != -1) {
+    res.json({ message: 'already liked' });
+  } else {
+    post.likes.push(req.userId);
+  }
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(_id, post, {
+    new: true,
+  });
 
   res.json(updatedPost);
 };
