@@ -4,11 +4,34 @@ import express from 'express';
 
 const router = express.Router();
 
-export const getPosts = async (req, res) => {
+export const getPost = async (req, res) => {
+  const id = req.params.id;
   try {
-    const postmessages = await PostMessage.find();
+    const post = await PostMessage.findById(id);
+    res.status(200).json({ data: post });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPosts = async (req, res) => {
+  const { page } = req.query;
+
+  try {
+    const limit = 8;
+    const startIndex = (Number(page) - 1) * limit;
+    const total = await PostMessage.countDocuments({});
+
+    const posts = await PostMessage.find()
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip(startIndex);
     // console.log(postmessages);
-    res.status(200).json(postmessages);
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
