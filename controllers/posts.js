@@ -5,7 +5,8 @@ import express from 'express';
 const router = express.Router();
 
 export const getPost = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  console.log(`id: ${id}`);
   try {
     const post = await PostMessage.findById(id);
     res.status(200).json({ data: post });
@@ -39,6 +40,7 @@ export const getPosts = async (req, res) => {
 
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
+  console.log(`in : ${req.query}`);
 
   try {
     const title = new RegExp(searchQuery, 'i'); //change so that case insestiveness gone
