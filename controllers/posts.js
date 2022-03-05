@@ -17,7 +17,7 @@ export const getPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   const { page } = req.query;
-
+  console.log(query);
   try {
     const limit = 8;
     const startIndex = (Number(page) - 1) * limit;

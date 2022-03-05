@@ -13,7 +13,14 @@ import postRoutes from './routes/posts.js';
 
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-app.use(cors());
+
+//cors
+const corsOptions = {
+  //give all name to allowing ports
+  origin: process.env.POSSIBLE_CLIENT.split(','),
+};
+app.use(cors(corsOptions));
+
 app.use('/posts', postRoutes);
 app.use('/user', userRoutes);
 
