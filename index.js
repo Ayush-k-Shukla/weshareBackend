@@ -17,8 +17,12 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 //cors
 const corsOptions = {
   //give all name to allowing ports
-  origin: process.env.POSSIBLE_CLIENT.split(','),
+  credentials: true,
+  origin: 'http://localhost:3000',
 };
+
+app.use(cors(corsOptions));
+console.log(process.env.POSSIBLE_CLIENT.split(','));
 app.use(cors(corsOptions));
 
 app.use('/posts', postRoutes);
