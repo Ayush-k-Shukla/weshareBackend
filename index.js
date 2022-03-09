@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const corsOptions = {
   //give all name to allowing ports
   credentials: true,
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://wesharefor.netlify.app'],
 };
 
 app.use(cors(corsOptions));
