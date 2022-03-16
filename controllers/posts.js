@@ -6,7 +6,7 @@ const router = express.Router();
 
 export const getPost = async (req, res) => {
   const { id } = req.params;
-  console.log(`id: ${id}`);
+  // console.log(`id: ${id}`);
   try {
     const post = await PostMessage.findById(id);
     res.status(200).json({ data: post });
@@ -19,7 +19,7 @@ export const getPosts = async (req, res) => {
   const { page } = req.query;
   // console.log(query);
   try {
-    const limit = 8;
+    const limit = 9;
     const startIndex = (Number(page) - 1) * limit;
     const total = await PostMessage.countDocuments({});
 
@@ -40,16 +40,16 @@ export const getPosts = async (req, res) => {
 
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
-  console.log(`in : ${req.query}`);
+  // console.log(`in : ${req.query}`);
 
   try {
     const title = new RegExp(searchQuery, 'i'); //change so that case insestiveness gone
     //*db logic to find
-    console.log(title);
+    // console.log(title);
     const posts = await PostMessage.find({
       $or: [{ title }, { tags: { $in: tags.split(',') } }],
     });
-    console.log(JSON.stringify(posts));
+    // console.log(JSON.stringify(posts));
     res.json({ data: posts });
   } catch (error) {
     console.log(error);
@@ -75,6 +75,7 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
   const { id: _id } = req.params;
   const post = req.body;
+  console.log(post);
   if (!mongoose.Types.ObjectId.isValid(_id))
     res.status(404).send(`No post with given id exits in db`);
 
@@ -127,6 +128,23 @@ export const likePost = async (req, res) => {
     new: true,
   });
 
+  res.status(200).json(updatedPost);
+};
+
+export const commentPost = async (req, res) => {
+  const { id } = req.params;
+  const { finalComment } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    res.status(404).send(`No post with given id exits in db`);
+
+  const post = await PostMessage.findById(id);
+  post.comments?.push(finalComment);
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+    new: true,
+  });
+  // console.log(updatedPost);
   res.status(200).json(updatedPost);
 };
 

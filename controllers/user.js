@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 
 export const signIn = async (req, res) => {
   const { email, password } = req.body;
-  console.log(`user : ${email}`);
+  // console.log(`user : ${email}`);
   try {
     const existingUser = await User.findOne({ email });
     console.log(`user : ${existingUser}`);
