@@ -22,7 +22,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// console.log(process.env.POSSIBLE_CLIENT.split(','));
+
 app.use(cors(corsOptions));
 
 app.use('/posts', postRoutes);

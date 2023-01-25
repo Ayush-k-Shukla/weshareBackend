@@ -6,7 +6,7 @@ const router = express.Router();
 
 export const getPost = async (req, res) => {
   const { id } = req.params;
-  // console.log(`id: ${id}`);
+
   try {
     const post = await PostMessage.findById(id);
     res.status(200).json({ data: post });
@@ -17,7 +17,7 @@ export const getPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   const { page } = req.query;
-  // console.log(query);
+
   try {
     const limit = 9;
     const startIndex = (Number(page) - 1) * limit;
@@ -27,7 +27,7 @@ export const getPosts = async (req, res) => {
       .sort({ _id: -1 })
       .limit(limit)
       .skip(startIndex);
-    // console.log(postmessages);
+
     res.status(200).json({
       data: posts,
       currentPage: Number(page),
@@ -40,19 +40,17 @@ export const getPosts = async (req, res) => {
 
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
-  // console.log(`in : ${req.query}`);
+
 
   try {
-    const title = new RegExp(searchQuery, 'i'); //change so that case insestiveness gone
-    //*db logic to find
-    // console.log(title);
+    const title = new RegExp(searchQuery, 'i');
     const posts = await PostMessage.find({
       $or: [{ title }, { tags: { $in: tags.split(',') } }],
     });
-    // console.log(JSON.stringify(posts));
+
     res.json({ data: posts });
   } catch (error) {
-    console.log(error);
+
     res.status(404).json({ message: err });
   }
 };
@@ -103,7 +101,7 @@ export const deletePost = async (req, res) => {
 export const likePost = async (req, res) => {
   const { id } = req.params;
 
-  // console.log(req.userId);
+
 
   if (!req.userId) {
     res.json({ message: 'Unauthenticated' });
@@ -122,7 +120,7 @@ export const likePost = async (req, res) => {
   } else {
     post.likes.push(req.userId);
   }
-  // console.log(JSON.stringify(post.likes));
+
 
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
@@ -144,7 +142,7 @@ export const commentPost = async (req, res) => {
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
   });
-  // console.log(updatedPost);
+
   res.status(200).json(updatedPost);
 };
 
