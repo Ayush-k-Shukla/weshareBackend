@@ -1,18 +1,29 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
+import cloudinary from 'cloudinary';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+dotenv.config();
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-//route import
-import userRoutes from './routes/user.js';
-import postRoutes from './routes/posts.js';
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_USER_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-app.use(bodyParser.json({ limit: '50mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+//route import
+import postRoutes from './routes/posts.js';
+import userRoutes from './routes/user.js';
+
+app.use(express.json({ limit: '50mb' }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '50mb',
+  })
+);
 
 //cors
 const corsOptions = {
@@ -20,8 +31,6 @@ const corsOptions = {
   credentials: true,
   origin: process.env.POSSIBLE_CLIENT.split(','),
 };
-
-app.use(cors(corsOptions));
 
 app.use(cors(corsOptions));
 
