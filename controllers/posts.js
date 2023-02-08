@@ -78,7 +78,7 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
   const { id: _id } = req.params;
   const post = req.body;
-  console.log(post);
+
   if (!mongoose.Types.ObjectId.isValid(_id))
     res.status(404).send(`No post with given id exits in db`);
 
@@ -119,7 +119,7 @@ export const likePost = async (req, res) => {
 
   if (index != -1) {
     post.likes = post.likes.filter((id) => id !== String(req.userId));
-    console.log(`firs liked`);
+
   } else {
     post.likes.push(req.userId);
   }
@@ -181,7 +181,8 @@ export const uploadFile = async (req, res) => {
   const { buffer } = req.file;
   try {
     const { secure_url } = await bufferUpload(buffer);
-    res.status(200).send(`Successfully uploaded, url: ${secure_url}`);
+
+    res.json({ data: secure_url });
   } catch (error) {
     console.log(error);
     res.send('Something went wrong please try again later..');
