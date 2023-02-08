@@ -1,8 +1,15 @@
-import mongoose from 'mongoose';
-import PostMessage from '../models/postMessage.js';
+import cloudinary from 'cloudinary';
 import express from 'express';
+import mongoose from 'mongoose';
+import { Readable } from 'stream';
+import PostMessage from '../models/postMessage.js';
 
 const router = express.Router();
+
+/**
+ * fetch the post data by id
+ * @return {data}
+ */
 
 export const getPost = async (req, res) => {
   const { id } = req.params;
@@ -41,7 +48,6 @@ export const getPosts = async (req, res) => {
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
 
-
   try {
     const title = new RegExp(searchQuery, 'i');
     const posts = await PostMessage.find({
@@ -50,7 +56,6 @@ export const getPostsBySearch = async (req, res) => {
 
     res.json({ data: posts });
   } catch (error) {
-
     res.status(404).json({ message: err });
   }
 };
@@ -73,7 +78,7 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
   const { id: _id } = req.params;
   const post = req.body;
-  console.log(post);
+
   if (!mongoose.Types.ObjectId.isValid(_id))
     res.status(404).send(`No post with given id exits in db`);
 
@@ -101,8 +106,6 @@ export const deletePost = async (req, res) => {
 export const likePost = async (req, res) => {
   const { id } = req.params;
 
-
-
   if (!req.userId) {
     res.json({ message: 'Unauthenticated' });
   }
@@ -116,11 +119,10 @@ export const likePost = async (req, res) => {
 
   if (index != -1) {
     post.likes = post.likes.filter((id) => id !== String(req.userId));
-    console.log(`firs liked`);
+
   } else {
     post.likes.push(req.userId);
   }
-
 
   const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
     new: true,
@@ -144,6 +146,47 @@ export const commentPost = async (req, res) => {
   });
 
   res.status(200).json(updatedPost);
+};
+
+/**
+ * Upload our file to cloudinary
+ * @param {buffer} buffer - file buffer
+ * @return {Promise}
+ */
+const bufferUpload = async (buffer) => {
+  return new Promise(async (resolve, reject) => {
+    const writeStream = await cloudinary.uploader.upload_stream(
+      (result, err) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+          return;
+        }
+        resolve(result);
+      }
+    );
+
+    const readStream = new Readable({
+      read() {
+        this.push(buffer);
+        this.push(null);
+      },
+    });
+
+    readStream.pipe(writeStream);
+  });
+};
+
+export const uploadFile = async (req, res) => {
+  const { buffer } = req.file;
+  try {
+    const { secure_url } = await bufferUpload(buffer);
+
+    res.json({ data: secure_url });
+  } catch (error) {
+    console.log(error);
+    res.send('Something went wrong please try again later..');
+  }
 };
 
 export default router;
